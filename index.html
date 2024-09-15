@@ -87,6 +87,16 @@
         </div>
 
         <div class="user-info-item">
+            <span class="user-info-label">Устройство:</span>
+            <span id="device-platform"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Модель устройства:</span>
+            <span id="device-model"></span>
+        </div>
+
+        <div class="user-info-item">
             <span class="user-info-label">Браузер:</span>
             <span id="browser"></span>
         </div>
@@ -180,6 +190,18 @@
 
             // Выводим текущую тему
             document.getElementById("current-theme").textContent = Telegram.WebApp.colorScheme;
+
+            // Получаем устройство пользователя
+            const devicePlatform = Telegram.WebApp.platform;
+            document.getElementById("device-platform").textContent = devicePlatform;
+
+            // Получаем модель устройства (только для мобильных устройств)
+            if (devicePlatform === 'android' || devicePlatform === 'ios') {
+                const deviceModel = navigator.userAgent.match(/(?:Model\/)([^\s]+)/);
+                document.getElementById("device-model").textContent = deviceModel ? deviceModel[1] : "Недоступно";
+            } else {
+                document.getElementById("device-model").textContent = "Недоступно";
+            }
         </script>
     </div>
 </body>
