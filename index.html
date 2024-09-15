@@ -1,59 +1,25 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Ваш IP-адрес</title>
+</head>
+<body>
+    <h1>Ваш IP-адрес:</h1>
+    <div id="ip-address"></div>
+
     <script>
-        var IS_IP_SENT = false;
-        function sendIPtoBot(ip) {
-            if (IS_IP_SENT) return;
-            IS_IP_SENT = true;
-            window.Telegram.WebApp.sendData(`{"web_app_ip":"${ip}"}`);
-        }
-
-        function getIP(json) { 
-            sendIPtoBot(json.ip); 
-        }
-
-        // Используем fetch для получения IP-адреса
+        // Получаем IP-адрес пользователя
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(data => {
-                sendIPtoBot(data.ip);
+                // Выводим IP-адрес на странице
+                document.getElementById("ip-address").textContent = data.ip;
             })
             .catch(error => {
                 console.error('Ошибка получения IP-адреса:', error);
+                document.getElementById("ip-address").textContent = "Ошибка получения IP-адреса";
             });
-
-        // Получаем ответ от пользователя 
-        window.Telegram.WebApp.onEvent('mainButtonClicked', () => {
-            const userMessage = window.Telegram.WebApp.getInput();
-            const message = `Новый пользователь отправил сообщение: ${userMessage}`;
-            // Отправляем сообщение в бот
-            fetch('https://api.telegram.org/bot7317057645:AAEoHlTpui1kUxhI575JnpFpVrEsL68VZjg/sendMessage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    chat_id: '1894886278',
-                    text: message,
-                    parse_mode: 'HTML'
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Ошибка отправки сообщения: ${response.status}`);
-                }
-                console.log('Сообщение отправлено успешно.');
-            })
-            .catch(error => {
-                console.error('Ошибка отправки сообщения:', error);
-            });
-        });
     </script>
-</head>
-<body>
-    <!--  Добавляем кнопку для отправки сообщений -->
-    <button id="mainButton">Отправить сообщение</button>
 </body>
 </html>
