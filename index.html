@@ -2,24 +2,94 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Ваш IP-адрес</title>
+    <title>Информация о пользователе</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+        }
+
+        .container {
+            width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 2px solid #000;
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
 </head>
 <body>
-    <h1>Ваш IP-адрес:</h1>
-    <div id="ip-address"></div>
+    <div class="container">
+        <h1>Информация о пользователе</h1>
 
-    <script>
-        // Получаем IP-адрес пользователя
-        fetch('https://api.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                // Выводим IP-адрес на странице
-                document.getElementById("ip-address").textContent = data.ip;
-            })
-            .catch(error => {
-                console.error('Ошибка получения IP-адреса:', error);
-                document.getElementById("ip-address").textContent = "Ошибка получения IP-адреса";
-            });
-    </script>
+        <div class="info-item">
+            <span class="info-label">IP-адрес:</span>
+            <span id="ip-address"></span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Браузер:</span>
+            <span id="browser"></span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Операционная система:</span>
+            <span id="os"></span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Разрешение экрана:</span>
+            <span id="screen-resolution"></span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Язык:</span>
+            <span id="language"></span>
+        </div>
+
+        <script>
+            // Получаем IP-адрес пользователя
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("ip-address").textContent = data.ip;
+                })
+                .catch(error => {
+                    console.error('Ошибка получения IP-адреса:', error);
+                    document.getElementById("ip-address").textContent = "Ошибка получения IP-адреса";
+                });
+
+            // Получаем информацию о браузере
+            const userAgent = navigator.userAgent;
+            document.getElementById("browser").textContent = userAgent;
+
+            // Получаем информацию об операционной системе
+            const platform = navigator.platform;
+            document.getElementById("os").textContent = platform;
+
+            // Получаем разрешение экрана
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            document.getElementById("screen-resolution").textContent = `${screenWidth} x ${screenHeight}`;
+
+            // Получаем язык пользователя
+            const language = navigator.language;
+            document.getElementById("language").textContent = language;
+        </script>
+    </div>
 </body>
 </html>
