@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Информация о пользователе</title>
+    <title>Информация о сессии пользователя</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             background-color: #f0f0f0;
@@ -15,7 +16,7 @@
             padding: 20px;
             border: 2px solid #000;
             background-color: #fff;
-            font-family: sans-serif; /* Добавляем шрифт */
+            font-family: sans-serif;
         }
 
         .user-info-container h2 {
@@ -31,11 +32,49 @@
             font-weight: bold;
             color: #000;
         }
+
+        pre {
+            white-space: pre-wrap;
+            background: rgba(0, 0, 0, .07);
+            color: var(--tg-theme-text-color, #222);
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 7px 0;
+            word-break: break-word;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <div class="user-info-container">
-        <h2>Информация о пользователе</h2>
+        <h2>Информация о сессии пользователя</h2>
+
+        <div class="user-info-item">
+            <span class="user-info-label">ID пользователя:</span>
+            <span id="user-id"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Имя пользователя:</span>
+            <span id="user-name"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Фамилия пользователя:</span>
+            <span id="user-last-name"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Username:</span>
+            <span id="user-username"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Language Code:</span>
+            <span id="user-language-code"></span>
+        </div>
 
         <div class="user-info-item">
             <span class="user-info-label">IP-адрес:</span>
@@ -62,7 +101,36 @@
             <span id="language"></span>
         </div>
 
+        <div class="user-info-item">
+            <span class="user-info-label">Данные инициализации:</span>
+            <pre id="init-data"></pre>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Данные инициализации (Unsafe):</span>
+            <pre id="init-data-unsafe"></pre>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Текущая тема:</span>
+            <span id="current-theme"></span>
+        </div>
+
         <script>
+            // Получаем информацию о пользователе из Telegram Web App
+            const userId = Telegram.WebApp.initDataUnsafe.user.id;
+            const userName = Telegram.WebApp.initDataUnsafe.user.first_name;
+            const userLastName = Telegram.WebApp.initDataUnsafe.user.last_name;
+            const userUsername = Telegram.WebApp.initDataUnsafe.user.username;
+            const userLanguageCode = Telegram.WebApp.initDataUnsafe.user.language_code;
+
+            // Выводим информацию о пользователе
+            document.getElementById("user-id").textContent = userId;
+            document.getElementById("user-name").textContent = userName;
+            document.getElementById("user-last-name").textContent = userLastName;
+            document.getElementById("user-username").textContent = userUsername;
+            document.getElementById("user-language-code").textContent = userLanguageCode;
+
             // Получаем IP-адрес пользователя
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
@@ -90,6 +158,13 @@
             // Получаем язык пользователя
             const language = navigator.language;
             document.getElementById("language").textContent = language;
+
+            // Выводим данные инициализации
+            document.getElementById("init-data").textContent = JSON.stringify(Telegram.WebApp.initData, null, 2);
+            document.getElementById("init-data-unsafe").textContent = JSON.stringify(Telegram.WebApp.initDataUnsafe, null, 2);
+
+            // Выводим текущую тему
+            document.getElementById("current-theme").textContent = Telegram.WebApp.colorScheme;
         </script>
     </div>
 </body>
