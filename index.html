@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пример Biometrics</title>
+  <title>Пример Biometrics и информации о пользователе</title>
   <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
   <script>
     // Обработчик событий
@@ -18,8 +18,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const biometricManager = Telegram.WebApp.BiometricManager;
+      const userInfo = document.getElementById('user-info');
 
-      // Проверьте доступность Biometrics
+      // Проверка доступности Biometrics
       if (!biometricManager.isBiometricAvailable) {
         alert("Биометрия недоступна на этом устройстве");
         return;
@@ -27,6 +28,16 @@
 
       // Инициализация
       biometricManager.init(); 
+
+      // Вывод информации о пользователе
+      userInfo.innerHTML = `
+        <p><strong>Идентификатор пользователя:</strong> ${Telegram.WebApp.initDataUnsafe.user.id}</p>
+        <p><strong>Имя пользователя:</strong> ${Telegram.WebApp.initDataUnsafe.user.username || "Неизвестно"}</p>
+        <p><strong>Имя:</strong> ${Telegram.WebApp.initDataUnsafe.user.first_name || "Неизвестно"} ${Telegram.WebApp.initDataUnsafe.user.last_name || "Неизвестно"}</p>
+        <p><strong>Запрос:</strong> ${JSON.stringify(Telegram.WebApp.initDataUnsafe.query_id || "Отсутствует", null, 2)}</p>
+        <p><strong>Данные:</strong> ${JSON.stringify(Telegram.WebApp.initData || "Отсутствуют", null, 2)}</p>
+        <p><strong>Параметры темы:</strong> ${JSON.stringify(Telegram.WebApp.themeParams || "Отсутствуют", null, 2)}</p>
+      `;
 
       // Кнопка для запроса доступа
       const requestButton = document.getElementById('request-button');
@@ -55,6 +66,7 @@
   </script>
 </head>
 <body>
+  <div id="user-info"></div>
   <button id="request-button">Запросить доступ к биометрии</button>
   <button id="auth-button">Аутентифицироваться</button>
 </body>
