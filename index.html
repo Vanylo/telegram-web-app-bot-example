@@ -131,6 +131,38 @@
             <span id="current-theme"></span>
         </div>
 
+        <div class="user-info-item">
+            <span class="user-info-label">Biometric Manager:</span>
+            <div>
+                <span class="user-info-label">Инициализирован:</span>
+                <span id="bm-inited"></span>
+            </div>
+            <div>
+                <span class="user-info-label">Доступен:</span>
+                <span id="bm-available"></span>
+            </div>
+            <div>
+                <span class="user-info-label">Тип:</span>
+                <span id="bm-type"></span>
+            </div>
+            <div>
+                <span class="user-info-label">Запрошен доступ:</span>
+                <span id="bm-access-requested"></span>
+            </div>
+            <div>
+                <span class="user-info-label">Доступ предоставлен:</span>
+                <span id="bm-access-granted"></span>
+            </div>
+            <div>
+                <span class="user-info-label">Токен сохранен:</span>
+                <span id="bm-token-saved"></span>
+            </div>
+            <div>
+                <span class="user-info-label">ID устройства:</span>
+                <span id="bm-device-id"></span>
+            </div>
+        </div>
+
         <script>
             // Получаем информацию о пользователе из Telegram Web App
             const userId = Telegram.WebApp.initDataUnsafe.user.id;
@@ -202,6 +234,19 @@
             } else {
                 document.getElementById("device-model").textContent = "Недоступно";
             }
+
+            // Получаем информацию о Biometric Manager
+            const biometricManager = Telegram.WebApp.BiometricManager;
+            biometricManager.init();
+            Telegram.WebApp.onEvent('biometricManagerUpdated', () => {
+                document.getElementById('bm-inited').textContent = biometricManager.isInited;
+                document.getElementById('bm-available').textContent = biometricManager.isBiometricAvailable;
+                document.getElementById('bm-type').textContent = biometricManager.biometricType;
+                document.getElementById('bm-access-requested').textContent = biometricManager.isAccessRequested;
+                document.getElementById('bm-access-granted').textContent = biometricManager.isAccessGranted;
+                document.getElementById('bm-token-saved').textContent = biometricManager.isBiometricTokenSaved;
+                document.getElementById('bm-device-id').textContent = biometricManager.deviceId;
+            });
         </script>
     </div>
 </body>
