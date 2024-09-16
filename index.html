@@ -97,6 +97,11 @@
         </div>
 
         <div class="user-info-item">
+            <span class="user-info-label">Версия Android:</span>
+            <span id="android-version"></span>
+        </div>
+
+        <div class="user-info-item">
             <span class="user-info-label">Браузер:</span>
             <span id="browser"></span>
         </div>
@@ -204,8 +209,24 @@
             document.getElementById("browser").textContent = userAgent;
 
             // Получаем информацию об операционной системе
-            const platform = navigator.platform;
-            document.getElementById("os").textContent = platform;
+            const devicePlatform = Telegram.WebApp.platform;
+            document.getElementById("device-platform").textContent = devicePlatform;
+
+            // Получаем модель устройства (только для мобильных устройств)
+            if (devicePlatform === 'android' || devicePlatform === 'ios') {
+                const deviceModel = navigator.userAgent.match(/(?:Model\/)([^\s]+)/);
+                document.getElementById("device-model").textContent = deviceModel ? deviceModel[1] : "Недоступно";
+            } else {
+                document.getElementById("device-model").textContent = "Недоступно";
+            }
+
+            // Получаем версию Android (только для Android)
+            if (devicePlatform === 'android') {
+                const androidVersion = navigator.userAgent.match(/(?:Android)\s*([\d\.]+)/);
+                document.getElementById("android-version").textContent = androidVersion ? androidVersion[1] : "Недоступно";
+            } else {
+                document.getElementById("android-version").textContent = "Недоступно";
+            }
 
             // Получаем разрешение экрана
             const screenWidth = window.screen.width;
