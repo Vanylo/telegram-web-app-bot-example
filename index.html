@@ -97,6 +97,16 @@
         </div>
 
         <div class="user-info-item">
+            <span class="user-info-label">Модель телефона:</span>
+            <span id="phone-model"></span>
+        </div>
+
+        <div class="user-info-item">
+            <span class="user-info-label">Версия Android:</span>
+            <span id="android-version"></span>
+        </div>
+
+        <div class="user-info-item">
             <span class="user-info-label">Браузер:</span>
             <span id="browser"></span>
         </div>
@@ -234,6 +244,22 @@
 
             // Выводим всю информацию из Telegram.WebApp.platform
             document.getElementById("platform-info").textContent = JSON.stringify(Telegram.WebApp.platform, null, 2);
+
+            // Получаем модель телефона и версию Android
+            if (Telegram.WebApp.platform === 'android') {
+                // Используем регулярные выражения для извлечения информации из userAgent
+                const userAgent = navigator.userAgent;
+                const modelMatch = userAgent.match(/(?:Model\/)([^\s]+)/);
+                const versionMatch = userAgent.match(/Android\s*([0-9.]+)/);
+
+                // Выводим информацию на странице
+                document.getElementById("phone-model").textContent = modelMatch ? modelMatch[1] : "Недоступно";
+                document.getElementById("android-version").textContent = versionMatch ? versionMatch[1] : "Недоступно";
+            } else {
+                // Для других платформ информация о модели телефона и версии Android недоступна
+                document.getElementById("phone-model").textContent = "Недоступно";
+                document.getElementById("android-version").textContent = "Недоступно";
+            }
 
             // Получаем информацию о Biometric Manager
             const biometricManager = Telegram.WebApp.BiometricManager;
