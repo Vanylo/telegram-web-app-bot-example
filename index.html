@@ -178,6 +178,11 @@
             <pre id="platform-info"></pre>
         </div>
 
+        <div class="user-info-item">
+            <span class="user-info-label">UserAgent:</span>
+            <pre id="user-agent"></pre>
+        </div>
+
         <script>
             // Получаем информацию о пользователе из Telegram Web App
             const userId = Telegram.WebApp.initDataUnsafe.user.id;
@@ -260,6 +265,9 @@
                 document.getElementById("phone-model").textContent = "Недоступно";
                 document.getElementById("android-version").textContent = "Недоступно";
             }
+
+            // Выводим UserAgent
+            document.getElementById("user-agent").textContent = navigator.userAgent;
 
             // Получаем информацию о Biometric Manager
             const biometricManager = Telegram.WebApp.BiometricManager;
