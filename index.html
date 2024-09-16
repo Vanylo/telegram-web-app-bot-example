@@ -45,20 +45,6 @@
             word-break: break-word;
             text-align: left;
         }
-
-        .button-container {
-            margin-top: 20px;
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -197,10 +183,6 @@
             <pre id="user-agent"></pre>
         </div>
 
-        <div class="button-container">
-            <button id="request-biometric-access">Запросить доступ к Biometric Manager</button>
-        </div>
-
         <script>
             // Получаем информацию о пользователе из Telegram Web App
             const userId = Telegram.WebApp.initDataUnsafe.user.id;
@@ -289,16 +271,8 @@
 
             // Получаем информацию о Biometric Manager
             const biometricManager = Telegram.WebApp.BiometricManager;
-
-            // Инициализируем Biometric Manager
-            biometricManager.init()
-                .then(() => {
-                    // Обновляем информацию о Biometric Manager после инициализации
-                    updateBiometricInfo();
-                });
-
-            // Функция обновления информации о Biometric Manager
-            function updateBiometricInfo() {
+            biometricManager.init();
+            Telegram.WebApp.onEvent('biometricManagerUpdated', () => {
                 document.getElementById('bm-inited').textContent = biometricManager.isInited;
                 document.getElementById('bm-available').textContent = biometricManager.isBiometricAvailable;
                 document.getElementById('bm-type').textContent = biometricManager.biometricType;
@@ -306,22 +280,6 @@
                 document.getElementById('bm-access-granted').textContent = biometricManager.isAccessGranted;
                 document.getElementById('bm-token-saved').textContent = biometricManager.isBiometricTokenSaved;
                 document.getElementById('bm-device-id').textContent = biometricManager.deviceId;
-            }
-
-            // Обработчик для кнопки запроса доступа
-            document.getElementById('request-biometric-access').addEventListener('click', () => {
-                biometricManager.requestAccess()
-                    .then(granted => {
-                        // Обновляем информацию о Biometric Manager после запроса доступа
-                        updateBiometricInfo();
-                        if (granted) {
-                            // Если доступ предоставлен, выводим сообщение
-                            Telegram.WebApp.showAlert("Доступ к Biometric Manager предоставлен");
-                        } else {
-                            // Если доступ не предоставлен, выводим сообщение
-                            Telegram.WebApp.showAlert("Доступ к Biometric Manager не предоставлен");
-                        }
-                    });
             });
         </script>
     </div>
