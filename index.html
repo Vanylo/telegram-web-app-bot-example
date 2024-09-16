@@ -45,6 +45,20 @@
             word-break: break-word;
             text-align: left;
         }
+
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -183,6 +197,10 @@
             <pre id="user-agent"></pre>
         </div>
 
+        <div class="button-container">
+            <button id="request-biometric-access">Запросить доступ к Biometric Manager</button>
+        </div>
+
         <script>
             // Получаем информацию о пользователе из Telegram Web App
             const userId = Telegram.WebApp.initDataUnsafe.user.id;
@@ -280,6 +298,11 @@
                 document.getElementById('bm-access-granted').textContent = biometricManager.isAccessGranted;
                 document.getElementById('bm-token-saved').textContent = biometricManager.isBiometricTokenSaved;
                 document.getElementById('bm-device-id').textContent = biometricManager.deviceId;
+            });
+
+            // Обработчик для кнопки запроса доступа
+            document.getElementById('request-biometric-access').addEventListener('click', () => {
+                biometricManager.requestAccess();
             });
         </script>
     </div>
