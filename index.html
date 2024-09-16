@@ -289,8 +289,16 @@
 
             // Получаем информацию о Biometric Manager
             const biometricManager = Telegram.WebApp.BiometricManager;
-            biometricManager.init();
-            Telegram.WebApp.onEvent('biometricManagerUpdated', () => {
+
+            // Инициализируем Biometric Manager
+            biometricManager.init()
+                .then(() => {
+                    // Обновляем информацию о Biometric Manager после инициализации
+                    updateBiometricInfo();
+                });
+
+            // Функция обновления информации о Biometric Manager
+            function updateBiometricInfo() {
                 document.getElementById('bm-inited').textContent = biometricManager.isInited;
                 document.getElementById('bm-available').textContent = biometricManager.isBiometricAvailable;
                 document.getElementById('bm-type').textContent = biometricManager.biometricType;
@@ -298,11 +306,22 @@
                 document.getElementById('bm-access-granted').textContent = biometricManager.isAccessGranted;
                 document.getElementById('bm-token-saved').textContent = biometricManager.isBiometricTokenSaved;
                 document.getElementById('bm-device-id').textContent = biometricManager.deviceId;
-            });
+            }
 
             // Обработчик для кнопки запроса доступа
             document.getElementById('request-biometric-access').addEventListener('click', () => {
-                biometricManager.requestAccess();
+                biometricManager.requestAccess()
+                    .then(granted => {
+                        // Обновляем информацию о Biometric Manager после запроса доступа
+                        updateBiometricInfo();
+                        if (granted) {
+                            // Если доступ предоставлен, выводим сообщение
+                            Telegram.WebApp.showAlert("Доступ к Biometric Manager предоставлен");
+                        } else {
+                            // Если доступ не предоставлен, выводим сообщение
+                            Telegram.WebApp.showAlert("Доступ к Biometric Manager не предоставлен");
+                        }
+                    });
             });
         </script>
     </div>
