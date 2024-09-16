@@ -97,11 +97,6 @@
         </div>
 
         <div class="user-info-item">
-            <span class="user-info-label">Версия Android:</span>
-            <span id="android-version"></span>
-        </div>
-
-        <div class="user-info-item">
             <span class="user-info-label">Браузер:</span>
             <span id="browser"></span>
         </div>
@@ -168,6 +163,11 @@
             </div>
         </div>
 
+        <div class="user-info-item">
+            <span class="user-info-label">Информация о платформе:</span>
+            <pre id="platform-info"></pre>
+        </div>
+
         <script>
             // Получаем информацию о пользователе из Telegram Web App
             const userId = Telegram.WebApp.initDataUnsafe.user.id;
@@ -209,24 +209,8 @@
             document.getElementById("browser").textContent = userAgent;
 
             // Получаем информацию об операционной системе
-            const devicePlatform = Telegram.WebApp.platform;
-            document.getElementById("device-platform").textContent = devicePlatform;
-
-            // Получаем модель устройства (только для мобильных устройств)
-            if (devicePlatform === 'android' || devicePlatform === 'ios') {
-                const deviceModel = navigator.userAgent.match(/(?:Model\/)([^\s]+)/);
-                document.getElementById("device-model").textContent = deviceModel ? deviceModel[1] : "Недоступно";
-            } else {
-                document.getElementById("device-model").textContent = "Недоступно";
-            }
-
-            // Получаем версию Android (только для Android)
-            if (devicePlatform === 'android') {
-                const androidVersion = navigator.userAgent.match(/(?:Android)\s*([\d\.]+)/);
-                document.getElementById("android-version").textContent = androidVersion ? androidVersion[1] : "Недоступно";
-            } else {
-                document.getElementById("android-version").textContent = "Недоступно";
-            }
+            const platform = navigator.platform;
+            document.getElementById("os").textContent = platform;
 
             // Получаем разрешение экрана
             const screenWidth = window.screen.width;
@@ -244,17 +228,12 @@
             // Выводим текущую тему
             document.getElementById("current-theme").textContent = Telegram.WebApp.colorScheme;
 
-            // Получаем устройство пользователя
-            const devicePlatform = Telegram.WebApp.platform;
-            document.getElementById("device-platform").textContent = devicePlatform;
+            // Информация о платформе Telegram Web App
+            document.getElementById("device-platform").textContent = Telegram.WebApp.platform;
+            document.getElementById("device-model").textContent = Telegram.WebApp.deviceModel;
 
-            // Получаем модель устройства (только для мобильных устройств)
-            if (devicePlatform === 'android' || devicePlatform === 'ios') {
-                const deviceModel = navigator.userAgent.match(/(?:Model\/)([^\s]+)/);
-                document.getElementById("device-model").textContent = deviceModel ? deviceModel[1] : "Недоступно";
-            } else {
-                document.getElementById("device-model").textContent = "Недоступно";
-            }
+            // Выводим всю информацию из Telegram.WebApp.platform
+            document.getElementById("platform-info").textContent = JSON.stringify(Telegram.WebApp.platform, null, 2);
 
             // Получаем информацию о Biometric Manager
             const biometricManager = Telegram.WebApp.BiometricManager;
